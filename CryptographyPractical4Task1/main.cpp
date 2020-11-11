@@ -25,5 +25,29 @@ int main()
 
     cout << "The SHA-1 of \"" << input << "\" is: " << hash << endl;
 
+
+    string attemp;
+    char c;
+    long attemptNumber = 32;
+
+    while (checksum.final() != hash)
+    {
+        //Generate next char
+        c = attemptNumber;
+
+        s.push_back(ch);
+
+        checksum.update(attemp);
+
+        
+
+
+        attemptNumber += 1;
+
+        if (attemptNumber 
+    }
+
+    cout << "Brute forced password after \"" << attemptNumber << "\" attempts. Password is: " << attemp << endl;
+
     return 0;
 }
