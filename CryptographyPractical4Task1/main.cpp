@@ -8,7 +8,22 @@
 
 using namespace std;
 
+string GetNextAttempt(int digitAttemp, int charAttempt)
+{
 
+    string tmp_s;
+
+    static const char alphanum[] =
+        "0123456789"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+
+
+    tmp_s += alphanum[charAttempt-1];
+
+
+    return tmp_s;
+}
 
 int main()
 {
@@ -17,7 +32,7 @@ int main()
     cout << "Enter String: ";
     getline(cin, input);
 
-    
+
 
     SHA1 checksum;
     checksum.update(input);
@@ -25,29 +40,40 @@ int main()
 
     cout << "The SHA-1 of \"" << input << "\" is: " << hash << endl;
 
+    string attempt;
+    long digitOne = 32;
+    long digitTwo = 32;
 
-    string attemp;
-    char c;
-    long attemptNumber = 32;
+
+
+    for (size_t i = 32; i < 128; i++)
+    {
+        for (size_t j = 32; j < 128; j++)
+        {
+
+        }
+    }
+
 
     while (checksum.final() != hash)
     {
-        //Generate next char
-        c = attemptNumber;
-
-        s.push_back(ch);
-
-        checksum.update(attemp);
-
         
+        cout << "\" Failed " << endl;
+
+        //Generate next char
+        attempt = digitOne;
+
+        checksum.update(attempt);
+
+        digitOne += 1;
 
 
-        attemptNumber += 1;
 
-        if (attemptNumber 
+        cout << "Trying password \"" << attempt;
     }
 
-    cout << "Brute forced password after \"" << attemptNumber << "\" attempts. Password is: " << attemp << endl;
+
+    cout << "\" Brute forced password after \"" << attempt << "\" attempts." << endl;
 
     return 0;
 }
