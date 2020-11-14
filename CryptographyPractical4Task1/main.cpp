@@ -9,94 +9,100 @@
 
 using namespace std;
 
+string password;
 
-std::string random_string()
+bool IsCorrectPassword(string guess, string actualPassword)
+{
+    return guess.compare(actualPassword) == 0;
+}
+
+void Generate(unsigned int length, std::string s)
 {
     std::string str("0123456789abcdefghijklmnopqrstuvwxyz");
 
-    std::random_device rd;
-    std::mt19937 generator(rd());
+    if (length == 0) // when length has been reached
+    {
+        std::cout << "Trying Password " << s;
+        if (IsCorrectPassword(s, password))
+        {
+            std::cout << " Correct Password " << "\n";
+            exit(0);
+        }
 
-    std::shuffle(str.begin(), str.end(), generator);
+        cout << "\n";
+        
+        return;
+    }
 
-    return str.substr(0, 6);    // assumes 32 < number of characters in str         
+    for (unsigned int i = 0; i < 36; i++) // iterate through 
+    {
+        // Create new string with next character
+        std::string appended = s + str[i];
+        Generate(length - 1, appended);
+    }
 }
 
-
-string GetNextAttempt(int digitAttemp, int charAttempt)
-{
-
-    string tmp_s;
-
-    static const char alphanum[] =
-        "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz";
-
-
-    tmp_s += alphanum[charAttempt-1];
-
-
-    return tmp_s;
-}
 
 int main()
 {
-    string str = random_string();
-    string str1 = random_string();
-    string str2 = random_string();
-    string str3 = random_string();
-    string str4 = random_string();
-    string str5 = random_string();
 
+    cout << "Enter password: ";
+    getline(cin, password);
 
-    string input = "";
-
-    cout << "Enter String: ";
-    getline(cin, input);
-
-
-
-    SHA1 checksum;
-    checksum.update(input);
-    const string hash = checksum.final();
-
-    cout << "The SHA-1 of \"" << input << "\" is: " << hash << endl;
-
-    string attempt;
-    long digitOne = 32;
-    long digitTwo = 32;
-
-
-
-    for (size_t i = 32; i < 128; i++)
+    for (size_t i = 1; i < 7; i++)
     {
-        for (size_t j = 32; j < 128; j++)
-        {
-
-        }
+        Generate(i, "");
     }
+    
 
 
-    while (checksum.final() != hash)
-    {
-        
-        cout << "\" Failed " << endl;
+    //string input = "";
 
-        //Generate next char
-        attempt = digitOne;
-
-        checksum.update(attempt);
-
-        digitOne += 1;
+    //cout << "Enter String: ";
+    //getline(cin, input);
 
 
 
-        cout << "Trying password \"" << attempt;
-    }
+    //SHA1 checksum;
+    //checksum.update(input);
+    //const string hash = checksum.final();
+
+    //cout << "The SHA-1 of \"" << input << "\" is: " << hash << endl;
+
+    //string attempt;
+    //long digitOne = 32;
+    //long digitTwo = 32;
 
 
-    cout << "\" Brute forced password after \"" << attempt << "\" attempts." << endl;
 
-    return 0;
+    //for (size_t i = 32; i < 128; i++)
+    //{
+    //    for (size_t j = 32; j < 128; j++)
+    //    {
+
+    //    }
+    //}
+
+
+    //while (checksum.final() != hash)
+    //{
+    //    
+    //    cout << "\" Failed " << endl;
+
+    //    //Generate next char
+    //    attempt = digitOne;
+
+    //    checksum.update(attempt);
+
+    //    digitOne += 1;
+
+
+
+    //    cout << "Trying password \"" << attempt;
+    //}
+
+
+    //cout << "\" Brute forced password after \"" << attempt << "\" attempts." << endl;
+
+    //return 0;
 }
