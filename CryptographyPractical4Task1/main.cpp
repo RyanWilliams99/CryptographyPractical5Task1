@@ -5,8 +5,23 @@
 #include <string>       
 #include <vector>    
 #include <math.h> 
+#include <random>
 
 using namespace std;
+
+
+std::string random_string()
+{
+    std::string str("0123456789abcdefghijklmnopqrstuvwxyz");
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::shuffle(str.begin(), str.end(), generator);
+
+    return str.substr(0, 6);    // assumes 32 < number of characters in str         
+}
+
 
 string GetNextAttempt(int digitAttemp, int charAttempt)
 {
@@ -27,6 +42,14 @@ string GetNextAttempt(int digitAttemp, int charAttempt)
 
 int main()
 {
+    string str = random_string();
+    string str1 = random_string();
+    string str2 = random_string();
+    string str3 = random_string();
+    string str4 = random_string();
+    string str5 = random_string();
+
+
     string input = "";
 
     cout << "Enter String: ";
