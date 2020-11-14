@@ -38,7 +38,6 @@ int Generate(unsigned int length, std::string s)
         }
 
         //cout << "\n";
-        
         return 0;
     }
 
@@ -62,8 +61,6 @@ void CrackHash(int passwordLength, string hashToCrack)
     //std::transform(password.begin(), password.end(), password.begin(), [](unsigned char c) { return std::toupper(c); });
 
     int result = 0;
-
-    
 
     for (size_t i = 1; i < passwordLength + 1; i++)
     {
