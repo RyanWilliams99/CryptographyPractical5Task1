@@ -1,8 +1,6 @@
-
-#pragma warning(disable : 4996)
+#pragma warning(disable : 4996);
 
 #include "sha1.h";
-
 #include <ctype.h>      
 #include <iostream>     
 #include <string>       
@@ -13,26 +11,27 @@
 #include <cctype>
 #include <chrono>
 
-
-using namespace std;
-
-string password;
+std::string password;
 SHA1 checksum;
 
-char currentGuess[40];
-char actualPassword[40];
+char currentGuess[40] = "";
+char actualHash[40] = "";
 
 
-std::string str("abcdefghijklmnopqrstuvwxyz0123456789");
+std::string charSet("abcdefghijklmnopqrstuvwxyz0123456789");
 
-bool IsCorrectPassword(string guess)
+
+bool IsCorrectPassword(std::string guess)
 {
     checksum.update(guess);
-    string hash = checksum.final();
+    std::string hash = checksum.final();
 
-    strcpy(currentGuess, hash.c_str());
+    hash.copy(currentGuess, 40);
 
-    return std::strcmp(currentGuess, actualPassword) == 0;
+    std::cout << "About to try " << currentGuess << " actual password hash is " << actualHash << std::endl;
+
+    return std::strcmp(currentGuess, actualHash) == 0;
+
 }
 
 int Generate(unsigned int length, std::string s)
@@ -48,66 +47,60 @@ int Generate(unsigned int length, std::string s)
             return 1;
         }
 
-        //cout << "\n";
+        //std::cout << "\n";
         return 0;
     }
 
     for (unsigned int i = 0; i < 36; i++) // iterate through 
     {
-        // Create new string with next character
-        std::string appended = s + str[i];
+        std::string appended = s + charSet[i];
         if (Generate(length - 1, appended) == 1) return 1;
     }
 }
 
 
-
-void CrackHash(int passwordLength, string hashToCrack)
+void CrackHash(int passwordLength, std::string hashToCrack)
 {
-    cout << "\n" << "Attempting to crack " << hashToCrack <<"...\n";
+    std::cout << "\n" << "Attempting to crack " << hashToCrack <<"...\n";
     auto start = std::chrono::high_resolution_clock::now();
-    auto finish = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed;
 
-    strcpy(actualPassword, hashToCrack.c_str());
+    //std::cout << hashToCrack << std::endl;
+
+    //std::cout << actualHash << std::endl;
 
 
+    strcpy(actualHash, hashToCrack.c_str());
 
-    //std::transform(password.begin(), password.end(), password.begin(), [](unsigned char c) { return std::toupper(c); });
 
-    int result = 0;
+    //std::cout << hashToCrack << std::endl;
+    //
+    //std::cout << actualHash << std::endl;
 
     for (size_t i = 1; i < passwordLength + 1; i++)
     {
-        cout << "Trying all possible " << i << " length Passwords...";
-        result = Generate(i, "");
-        if (result == 1)
+        std::cout << "Trying all possible " << i << " length Passwords...";
+        if (Generate(i, "") == 1)
         {
-            result = 0;
-            
-            finish = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double> elapsed = finish - start;
+            elapsed = std::chrono::high_resolution_clock::now() - start;
 
-            cout << "\" after " << elapsed.count() << " seconds (" << elapsed.count() / 60 << " Minutes)" << "\n";
+            std::cout << "\" after " << elapsed.count() << " seconds (" << elapsed.count() / 60 << " Minutes)" << "\n";
             return;
         }
-        cout << "\n";
+        std::cout << "\n";
     }
 
-    cout << "Failed to crack hash\n";
+    std::cout << "Failed to crack hash\n";
 }
 
 
 int main()
 {
 
-    string intput;
-    cout << "Enter sha1 hash or type test: ";
-    getline(cin, intput);
-    if (intput != "test")
-    {
-        CrackHash(6, intput);
-    }
-    else
+    std::string intput;
+    std::cout << "Enter sha1 hash or type test: ";
+    getline(std::cin, intput);
+    if (intput == "test")
     {
         CrackHash(6, "0ade7c2cf97f75d009975f4d720d1fa6c19f4897"); //Mine that are quick
         CrackHash(6, "a9993e364706816aba3e25717850c26c9cd0d89d"); //Mine that are quick
@@ -128,5 +121,7 @@ int main()
         //CrackHash(6, "02285af8f969dc5c7b12be72fbce858997afe80a"); //From worksheet
         //CrackHash(6, "57864da96344366865dd7cade69467d811a7961b"); //From worksheet
     }
+    else
+        CrackHash(6, intput);
     
 }
