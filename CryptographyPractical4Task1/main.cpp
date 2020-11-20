@@ -48,7 +48,6 @@ bool IsCorrectPassword(std::string nextHash)
 
     return result == 0;
 
-
     /*std::string hash = checksum.final();
     hash.copy(currentGuess, 40);
     std::cout << "About to try " << currentGuess << " actual password hash is " << actualHash << std::endl;
@@ -135,10 +134,10 @@ int main()
     getline(std::cin, intput);
     if (intput == "test")
     {
-        CrackHash("0ade7c2cf97f75d009975f4d720d1fa6c19f4897", 6); //Mine that are quick
-        CrackHash("a9993e364706816aba3e25717850c26c9cd0d89d", 6); //Mine that are quick
-        CrackHash("589c22335a381f122d129225f5c0ba3056ed5811", 6); //Mine that are quick
-        CrackHash("d8b1c3e59ae165abbbb80c3a017ce77d5e281b18", 6); //Mine that are quick
+        //CrackHash("0ade7c2cf97f75d009975f4d720d1fa6c19f4897", 6); //Mine that are quick
+        //CrackHash("a9993e364706816aba3e25717850c26c9cd0d89d", 6); //Mine that are quick
+        //CrackHash("589c22335a381f122d129225f5c0ba3056ed5811", 6); //Mine that are quick
+        //CrackHash("d8b1c3e59ae165abbbb80c3a017ce77d5e281b18", 6); //Mine that are quick
 
         CrackHash("c2543fff3bfa6f144c2f06a7de6cd10c0b650cae", 6); //From worksheet
         CrackHash("b47f363e2b430c0647f14deea3eced9b0ef300ce", 6); //From worksheet
