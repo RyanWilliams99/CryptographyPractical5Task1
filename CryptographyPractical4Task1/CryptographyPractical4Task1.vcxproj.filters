@@ -26,5 +26,8 @@
     <ClInclude Include="tinysha1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="myLoggin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
