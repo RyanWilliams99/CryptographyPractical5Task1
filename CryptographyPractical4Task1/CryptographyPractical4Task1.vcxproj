@@ -142,7 +142,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="myLoggin.h" />
+    <ClInclude Include="helper.h" />
     <ClInclude Include="sha1.h" />
     <ClInclude Include="tinysha1.h" />
   </ItemGroup>
