@@ -25,9 +25,17 @@ const int SizeOfPasswordSpace = 2176782336;
 
 std::string charSet("abcdefghijklmnopqrstuvwxyz0123456789");
 
+std::string currentTime() {
+    time_t now = time(NULL);
+    struct tm tstruct;
+    char buf[40];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%X", &tstruct);
+    return buf;
+}
 
 
-void logstr(std::string str, bool newline, bool prefixWithTime)
+void logstr(std::string str, bool prefixWithTime, bool newline)
 {
     
     std::ofstream myfile;
@@ -38,9 +46,10 @@ void logstr(std::string str, bool newline, bool prefixWithTime)
     {
         if (prefixWithTime)
         {
-            myfile << currentTime();
-            std::cout << str;
+            myfile << currentTime() + " - ";
+            std::cout << currentTime() + " - ";
         }
+
         myfile << str;
         std::cout << str;
         if (newline)
@@ -53,19 +62,10 @@ void logstr(std::string str, bool newline, bool prefixWithTime)
     }
     else
     {
-        std::cerr << "didn't write" << std::endl;
+        std::cerr << "cant write" << std::endl;
     }
 
 }
-
-
-//std::unordered_map<std::string, std::string> umap;
-
-
-//To crack a sha1
-//generate a possible password
-//
-
 
 std::string hashToCrack;
 
@@ -74,24 +74,6 @@ std::string Hash(std::string input)
     checksum.update(input);
     return checksum.final();
 }
-
-void testSHA1(const std::string& val) {
-    sha1::SHA1 s;
-    s.processBytes(val.c_str(), val.size());
-    uint32_t digest[5];
-    s.getDigest(digest);
-    char tmp[48];
-    snprintf(tmp, 45, "%08x %08x %08x %08x %08x", digest[0], digest[1], digest[2], digest[3], digest[4]);
-    logstr("Calculated : (\"" + val + "\") = " + tmp, true);
-}
-
-//std::string newHash(std::string input)
-//{
-//    testSHA1("The quick brown fox jumps over the lazy dog");
-//    testSHA1("The quick brown fox jumps over the lazy cog");
-//    testSHA1("");
-//
-//}
 
 
 bool IsCorrectPassword(std::string nextHash)
@@ -103,22 +85,18 @@ bool IsCorrectPassword(std::string nextHash)
 
 int Generate(unsigned int length, std::string s)
 {
-    
-
     if (length == 0) // when length has been reached
     {
-        //std::cout << "Trying Password " << s;
         if (IsCorrectPassword(s))
         {
-            logstr("\nFound Correct Password \"" + s, false);
+            logstr(currentTime() + " - Found Correct Password \"" + s, false, false);
             return 1;
         }
 
-        //std::cout << "\n";
         return 0;
     }
 
-    for (unsigned int i = 0; i < 36; i++) // iterate through 
+    for (unsigned int i = 0; i < 36; i++) 
     {
         std::string appended = s + charSet[i];
         if (Generate(length - 1, appended) == 1)
@@ -129,39 +107,15 @@ int Generate(unsigned int length, std::string s)
     }
 }
 
-std::string currentTime() {
-    time_t now = time(NULL);
-    struct tm tstruct;
-    char buf[40];
-    tstruct = *localtime(&now);
-    //format: HH:mm:ss
-    strftime(buf, sizeof(buf), "%X", &tstruct);
-    return buf;
-}
 
 void CrackHash(std::string inputHash, int passwordLength)
 {
-    //First check to see if its already in hash table
 
-    //if (umap[])
-
-    logstr("\nStarting to brute force " + inputHash + "...", true);
-    //std::cout << "\n" << "Starting to brute force " << inputHash <<"...\n";
+    logstr(currentTime() + " - Starting to brute force " + inputHash + "...", false, true);
     auto start = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed;
 
-    //std::cout << hashToCrack << std::endl;
-
-    //std::cout << actualHash << std::endl;
-
-
-    //strcpy(actualHash, inputHash.c_str());
-
     hashToCrack = inputHash;
-
-    //std::cout << hashToCrack << std::endl;
-    //
-    //std::cout << actualHash << std::endl;
 
     for (size_t i = 1; i < passwordLength + 1; i++)
     {
@@ -169,23 +123,20 @@ void CrackHash(std::string inputHash, int passwordLength)
         std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         
 
-        logstr( + "Trying all possible " + std::to_string(i) + " length Passwords...", false);
+        logstr("Trying all possible " + std::to_string(i) + " length Passwords...", true, true);
 
         if (Generate(i, "") == 1)
         {
             elapsed = std::chrono::high_resolution_clock::now() - start;
 
-            logstr("\" after " + std::to_string(elapsed.count()) + " seconds (" + std::to_string(elapsed.count() / 60) + " Minutes)", true);
+            logstr("\" after " + std::to_string(elapsed.count()) + " seconds (" + std::to_string(elapsed.count() / 60) + " Minutes) \n", false, true);
             return;
         }
         std::cout << "\n";
     }
 
     std::cout << "Failed to crack hash\n";
-
 }
-
-
 
 int main()
 {
