@@ -16,16 +16,11 @@
 #include <chrono>
 #include <unordered_map>
 
-std::string password;
+Helper helper;
 SHA1 checksum;
-
-char currentGuess[40] = "";
-char actualHash[40] = "";
 
 std::string charSet("abcdefghijklmnopqrstuvwxyz0123456789");
 std::string hashToCrack;
-
-Helper helper;
 
 
 std::string Hash(std::string input)
@@ -42,11 +37,11 @@ bool IsCorrectPassword(std::string nextHash)
     return result == 0;
 }
 
-int Generate(unsigned int length, std::string s)
+int GenerateStringAndTest(unsigned int length, std::string s)
 {
-    if (length == 0) // when length has been reached
+    if (length == 0) // when length has been reached.
     {
-        if (IsCorrectPassword(s))
+        if (IsCorrectPassword(s)) //hash and see if its the same as entered hash if so found correct password
         {
             helper.logstr(helper.currentTime() + " - Found Correct Password \"" + s, false, false);
             return 1;
@@ -55,28 +50,26 @@ int Generate(unsigned int length, std::string s)
         return 0;
     }
 
-    for (unsigned int i = 0; i < 36; i++) 
+    for (unsigned int i = 0; i < 36; i++) //For each possible char 0-9 and a-b lowercase
     {
         std::string appended = s + charSet[i];
-        if (Generate(length - 1, appended) == 1)
+        if (GenerateStringAndTest(length - 1, appended) == 1)
         {
-            return 1;
+            return 1; //If result is one password is found so break out of recursion
         }
-
     }
 }
-
 
 void CrackHash(std::string inputHash, int passwordLength)
 {
 
-    helper.logstr(helper.currentTime() + " - Starting to brute force " + inputHash + "...", false, true);
+    helper.logstr(helper.currentTime() + " - Starting to brute force " + inputHash + "...", false, true); //logging...
     auto start = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed;
 
     hashToCrack = inputHash;
 
-    for (size_t i = 1; i < passwordLength + 1; i++)
+    for (size_t i = 1; i < passwordLength + 1; i++) //For each possible length
     {
 
         std::time_t end_time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -84,9 +77,9 @@ void CrackHash(std::string inputHash, int passwordLength)
 
         helper.logstr("Trying all possible " + std::to_string(i) + " length Passwords...", true, true);
 
-        if (Generate(i, "") == 1)
+        if (GenerateStringAndTest(i, "") == 1)
         {
-            elapsed = std::chrono::high_resolution_clock::now() - start;
+            elapsed = std::chrono::high_resolution_clock::now() - start; //log time to brute force
 
             helper.logstr("\" after " + std::to_string(elapsed.count()) + " seconds (" + std::to_string(elapsed.count() / 60) + " Minutes) \n", false, true);
             return;
@@ -122,9 +115,13 @@ int main()
         CrackHash("02285af8f969dc5c7b12be72fbce858997afe80a", 6); //From worksheet
         CrackHash("57864da96344366865dd7cade69467d811a7961b", 6); //From worksheet
     }
-    else
+    else if (intput.size() == 6)
     {
         CrackHash(intput, 6);
+    }
+    else
+    {
+        std::cout << "Invalid Input, must be 6 chars!\n";
     }
 
 }
