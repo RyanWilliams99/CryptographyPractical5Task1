@@ -25,6 +25,7 @@ public: void logstr(std::string str, bool prefixWithTime, bool newline)
 
         if (myfile.is_open())
         {
+
             if (prefixWithTime)
             {
                 myfile << currentTime() + " - ";
